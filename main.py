@@ -1,56 +1,30 @@
-import subprocess
+from PyQt5.QtWidgets import QApplication
+import sys
+import installer
+import installerGUI
 
-def instalAzulZulu():
-    # Set the path to your shell script
-    script_path = 'installAzulZulu.sh'
-
-    # Run the shell script
-    result = subprocess.run(script_path, shell=True)
-
-    # Check the return code of the script to see if it ran successfully
-    if result.returncode == 0:
-        print("Azul Zulu has been installed.")
-    else:
-        print("There was an error running the script.")
-
-def setJavaHome():
-    # Set the path to your shell script
-    script_path = 'setJavaHome.sh'
-
-    # Run the shell script
-    result = subprocess.run(script_path, shell=True)
-
-    # Check the return code of the script to see if it ran successfully
-    if result.returncode == 0:
-        print("JAVA_HOME has been set.")
-    else:
-        print("There was an error running the script.")
-
-
-def setMavenPath():
-    # Set the path to your shell script
-    script_path = 'setMavenPath.sh'
-
-    # Run the shell script
-    result = subprocess.run(script_path, shell=True)
-
-    # Check the return code of the script to see if it ran successfully
-    if result.returncode == 0:
-        print("Maven has been added to your PATH.")
-    else:
-        print("There was an error running the script.")
-
-
-def scoopInstall(program):
-    # Use Scoop to install program
-    command = 'scoop install ' + program
-    process = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
-    output, error = process.communicate()
-    print(output.decode())
-
-
+def main(): 
+    '''
+    print("1 - Install openJDK")
+    print("2 - Install Maven")
+    print("3 - Search Bucket")
+    while True:
+        choice = int(input("\nInput: "))
+        if (choice == 1):
+            installer.instalAzulZulu()
+        if (choice == 2): 
+            installer.installMaven()
+        if (choice == 3):
+            program = input("\nProgram: ")
+            installer.scoopSearch(program)        
+        if (choice == 0):
+            break'   
+    '''
+    app = QApplication(sys.argv)
+    
+    window = installerGUI.MainWindow('Automatic Installer')
+    
+    app.exec_()
 
 if __name__ == '__main__':
-    instalAzulZulu()
-    # setJavaHome()
-    # setMavenPath()
+    main()

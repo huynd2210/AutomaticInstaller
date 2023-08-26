@@ -1,4 +1,5 @@
 import subprocess
+import os
 
 def instalAzulZulu():
     # Set the path to your shell script
@@ -26,7 +27,6 @@ def setJavaHome():
     else:
         print("There was an error running the script.")
 
-
 def setMavenPath():
     # Set the path to your shell script
     script_path = 'setMavenPath.sh'
@@ -40,6 +40,28 @@ def setMavenPath():
     else:
         print("There was an error running the script.")
 
+def addBucket(bucketName):
+    command = "scoop bucket add " + bucketName
+    process = subprocess.run(command.split(), check = True, shell = True)
+    
+    return process.returncode == 0
+    
+def printAppInBucket(bucketName):
+    bucket_name = bucketName
+    bucket_path = os.path.join(os.getenv("USERPROFILE"), "scoop", "buckets", bucket_name, "bwucket")
+
+    if os.path.exists(bucket_path):
+        app_manifests = [f for f in os.listdir(bucket_path) if f.endswith(".json")]
+
+        app = []
+        for manifest in app_manifests:
+            app_name = os.path.splitext(manifest)[0]
+            app.append(app_name)
+        return True
+    else:
+        if (addBucket(bucketName)):
+            return printAppInBucket(bucketName)
+        else: return False
 
 def scoopInstall(program):
     # Use Scoop to install program
@@ -47,20 +69,18 @@ def scoopInstall(program):
     process = subprocess.run(command.split(), check = True, shell = True )
     
     if process.returncode == 0:
-        print(program + ' has installed successfully')
+        return True
     else:
-        print("There was an error installing the program.")
+        return False
         
 def scoopSearch(program):
     command = 'scoop search ' + program
-    process = subprocess.run(command.split(), check = True, shell = True, text = True, capture_output= True)
+    process = subprocess.run(command.split(), check = True, shell = True, text = True, capture_output = True)
     
     if process.returncode == 0:
         list = process.stdout.split("\n")
-        i = 4
-        while (list[i] != ''):
-            print(list[i])
-        return [i for i in list[4:] if list[i] != ""]
+        return [i for i in list[3:] if list[i] != ""]
     else:
-        print("Bucket not found")
         return []
+        
+    #return list
